@@ -50,6 +50,9 @@
 
     <div class="refresh-bar">
       <button @click="refreshAll" :disabled="loading">{{ loading ? '刷新中...' : '刷新数据' }}</button>
+      <button class="btn-chain" @click="fetchChain" :disabled="chaining">
+        {{ chaining ? '推演中...' : '攻击链推演' }}
+      </button>
       <span class="note">WebSocket {{ wsConnected ? '实时连接' : '未连接 (轮询降级)' }}</span>
     </div>
   </div>
@@ -74,6 +77,7 @@ export default {
       lastWsUpdate: 0,
       socket: null,
       attackChain: '',
+      chaining: false,
     }
   },
   methods: {
@@ -126,11 +130,15 @@ export default {
         this.ips = data.ips || this.ips
         this.$nextTick(() => this.updateCharts())
       } catch (e) {}
+      this.loading = false
+    },
+    async fetchChain() {
+      this.chaining = true
       try {
         const { data } = await axios.post('/api/alerts/chain', {})
         this.attackChain = data.data?.chain || ''
       } catch (e) {}
-      this.loading = false
+      this.chaining = false
     },
   },
   mounted() {
@@ -200,6 +208,11 @@ export default {
   border-radius: 6px; cursor: pointer; font-size: 13px;
 }
 .refresh-bar button:disabled { opacity: 0.5; }
+.btn-chain {
+  padding: 7px 18px; background: #7c4dff; color: #fff; border: none;
+  border-radius: 6px; cursor: pointer; font-size: 13px;
+}
+.btn-chain:disabled { opacity: 0.5; }
 .note { font-size: 12px; color: #90a4ae; }
 .chart-panel.full-width { grid-column: 1 / -1; }
 .chain-content {
