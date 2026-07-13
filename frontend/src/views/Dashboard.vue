@@ -43,6 +43,11 @@
       </div>
     </div>
 
+    <div class="chart-panel full-width" v-if="attackChain">
+      <div class="panel-title">攻击链推演</div>
+      <div class="chain-content">{{ attackChain }}</div>
+    </div>
+
     <div class="refresh-bar">
       <button @click="refreshAll" :disabled="loading">{{ loading ? '刷新中...' : '刷新数据' }}</button>
       <span class="note">WebSocket {{ wsConnected ? '实时连接' : '未连接 (轮询降级)' }}</span>
@@ -68,6 +73,7 @@ export default {
       wsConnected: false,
       lastWsUpdate: 0,
       socket: null,
+      attackChain: '',
     }
   },
   methods: {
@@ -119,6 +125,10 @@ export default {
         this.ids = data.ids || this.ids
         this.ips = data.ips || this.ips
         this.$nextTick(() => this.updateCharts())
+      } catch (e) {}
+      try {
+        const { data } = await axios.post('/api/alerts/chain', {})
+        this.attackChain = data.data?.chain || ''
       } catch (e) {}
       this.loading = false
     },
@@ -191,4 +201,9 @@ export default {
 }
 .refresh-bar button:disabled { opacity: 0.5; }
 .note { font-size: 12px; color: #90a4ae; }
+.chart-panel.full-width { grid-column: 1 / -1; }
+.chain-content {
+  white-space: pre-wrap; line-height: 1.9; font-size: 13px;
+  color: #37474f; padding: 6px 0;
+}
 </style>
