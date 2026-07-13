@@ -5,6 +5,7 @@ from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
+from flask_socketio import SocketIO
 
 from src.detector.rules import detect_attacks
 from src.parser.log_parser import parse_csv_log, parse_csv_rows
@@ -27,6 +28,7 @@ FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIST), static_url_path="/")
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 _last_analysis = {
     "events": 0,
@@ -55,6 +57,7 @@ def analyze_sample():
         "summary": summarize_alerts(alerts),
         "source": "示例数据",
     }
+    socketio.emit('ids_update', get_alert_stats().get_json())
     return jsonify(_last_analysis)
 
 
@@ -78,6 +81,7 @@ def analyze_upload():
         "summary": summarize_alerts(alerts),
         "source": uploaded.filename,
     }
+    socketio.emit('ids_update', get_alert_stats().get_json())
     return jsonify(_last_analysis)
 
 
@@ -269,5 +273,10 @@ def api_interfaces():
     return jsonify({"code": 0, "data": ifaces[:20]})
 
 
+@socketio.on('connect')
+def on_connect():
+    pass
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True, allow_unsafe_werkzeug=True)
