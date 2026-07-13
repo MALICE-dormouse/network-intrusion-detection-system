@@ -21,6 +21,7 @@ from src.defense import (
     set_default_policy as defense_set_default,
     clear_stats as defense_clear_stats,
 )
+from src.llm import analyze_alert, suggest_defense, analyze_attack_chain, is_available as llm_available
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -271,6 +272,54 @@ def api_interfaces():
     except:
         ifaces = ["eth0", "wlan0", "lo"]
     return jsonify({"code": 0, "data": ifaces[:20]})
+
+
+@app.get("/api/llm/status")
+def api_llm_status():
+    return jsonify({"code": 0, "data": {"available": llm_available()}})
+
+
+@app.post("/api/alerts/analyze")
+def api_analyze_alert():
+    alert = (request.get_json(silent=True) or {}).get("alert", {})
+    if not alert:
+        return jsonify({"code": 1, "message": "缺少告警数据"}), 400
+    result = analyze_alert(alert)
+    return jsonify({"code": 0, "data": {"analysis": result, "llm_used": llm_available()}})
+
+
+@app.post("/api/alerts/defend")
+def api_defend_alert():
+    alert = (request.get_json(silent=True) or {}).get("alert", {})
+    if not alert:
+        return jsonify({"code": 1, "message": "缺少告警数据"}), 400
+    suggestion = suggest_defense(alert)
+    rule = suggestion.get("rule", {})
+    try:
+        proc = {"any": 0, "icmp": 1, "tcp": 6, "udp": 17}
+        rule["protocol"] = proc.get(rule.get("protocol", "any"), 0)
+        defense_add_rule(rule)
+        rule_created = True
+    except Exception:
+        rule_created = False
+    return jsonify({
+        "code": 0,
+        "data": {
+            "rule": rule,
+            "reason": suggestion.get("reason", ""),
+            "rule_created": rule_created,
+            "llm_used": llm_available(),
+        },
+    })
+
+
+@app.post("/api/alerts/chain")
+def api_attack_chain():
+    alerts = (request.get_json(silent=True) or {}).get("alerts", [])
+    if not alerts:
+        alerts = _last_analysis.get("alerts", [])
+    result = analyze_attack_chain(alerts)
+    return jsonify({"code": 0, "data": {"chain": result, "llm_used": llm_available()}})
 
 
 @socketio.on('connect')
