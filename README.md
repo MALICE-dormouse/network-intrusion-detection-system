@@ -4,8 +4,6 @@
 
 ## 项目定位
 
-这个项目不是工业级商用 IDS/IPS，也不依赖实时抓包驱动、复杂分布式架构或重型机器学习模型。它更适合作为课程答辩和实验演示原型，强调以下几点：
-
 - 能清楚展示常见网络攻击的行为特征。
 - 能通过结构化日志进行规则检测、误用检测/特征库匹配和基础异常检测。
 - 能输出可解释的告警结果、风险等级、置信度、基线统计和攻击链事件。
@@ -38,7 +36,7 @@
 - `duration_ms`
 - `tls_fingerprint`
 
-对应代码见 [src/parser/log_parser.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/parser/log_parser.py) 和 [src/app.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/app.py)。
+对应代码见 [src/parser/log_parser.py](./src/parser/log_parser.py) 和 [src/app.py](./src/app.py)。
 
 ### 2. IDS 检测能力与特征库
 
@@ -60,7 +58,7 @@
 - 疑似横向移动
 - 大流量或长会话异常
 
-规则检测入口在 [src/detector/rules.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/detector/rules.py)，特征库检测入口在 [src/detector/signatures.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/detector/signatures.py)，异常检测入口在 [src/detector/anomaly.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/detector/anomaly.py)。内置特征库位于 [data/signatures.json](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/data/signatures.json)，示例测试覆盖见 [tests/test_detection.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/tests/test_detection.py) 和 [tests/test_signatures.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/tests/test_signatures.py)。
+规则检测入口在 [src/detector/rules.py](./src/detector/rules.py)，特征库检测入口在 [src/detector/signatures.py](./src/detector/signatures.py)，异常检测入口在 [src/detector/anomaly.py](./src/detector/anomaly.py)。内置特征库位于 [data/signatures.json](./data/signatures.json)，示例测试覆盖见 [tests/test_detection.py](./tests/test_detection.py) 和 [tests/test_signatures.py](./tests/test_signatures.py)。
 
 ### 3. 风险评分、基线与攻击链关联
 
@@ -68,7 +66,7 @@
 
 攻击链关联模块会按来源 IP 汇总扫描、初始访问、凭据攻击、横向移动、执行或控制等阶段。当同一来源触发两个及以上阶段时，系统会生成 `incidents` 事件，并输出对应的 `recommendations` 响应建议。
 
-风险评分相关实现位于 [src/scoring/risk.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/scoring/risk.py)，攻击链关联实现位于 [src/detector/correlation.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/detector/correlation.py)，统一结果模型位于 [src/detector/models.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/detector/models.py)。
+风险评分相关实现位于 [src/scoring/risk.py](./src/scoring/risk.py)，攻击链关联实现位于 [src/detector/correlation.py](./src/detector/correlation.py)，统一结果模型位于 [src/detector/models.py](./src/detector/models.py)。
 
 ### 4. Web 界面与分析接口
 
@@ -108,11 +106,11 @@
 }
 ```
 
-主应用入口见 [run.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/run.py) 和 [src/app.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/app.py)。
+主应用入口见 [run.py](./run.py) 和 [src/app.py](./src/app.py)。
 
 ### 5. IPS / 防御扩展接口
 
-仓库中已经包含一个防御接口层 [src/defense.py](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/src/defense.py)，并在后端暴露了规则管理、状态查询和统计接口，例如：
+仓库中已经包含一个防御接口层 [src/defense.py](./src/defense.py)，并在后端暴露了规则管理、状态查询和统计接口，例如：
 
 - `GET /api/defense/status`
 - `POST /api/defense/enable`
@@ -182,7 +180,7 @@ network intrusion detection system/
 - flask-cors
 - pytest
 
-当前 Python 依赖见 [requirements.txt](C:/Users/tmp/Desktop/信安科技创新/network intrusion detection system/requirements.txt)。
+当前 Python 依赖见 [requirements.txt](./requirements.txt)。
 
 ### 硬件与系统建议
 
