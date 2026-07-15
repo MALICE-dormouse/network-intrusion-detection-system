@@ -61,6 +61,27 @@ http://127.0.0.1:8001
 
 教师账号可以登记课程名称。由于成绩列表前端直接拼接返回字段，教师录入包含 HTML/脚本形态的课程名称后，其他用户查看成绩列表时会渲染该内容。
 
+## 演示脚本
+
+启动站点后，可以使用本机脚本触发常见演示行为：
+
+```bash
+python scripts/demo_attacks.py all
+```
+
+也可以只运行单项：
+
+```bash
+python scripts/demo_attacks.py idor
+python scripts/demo_attacks.py sqli
+python scripts/demo_attacks.py xss
+python scripts/demo_attacks.py bruteforce
+python scripts/demo_attacks.py export
+python scripts/demo_attacks.py reset
+```
+
+脚本默认只访问 `http://127.0.0.1:8001`，并会拒绝非本机目标地址。
+
 ## IDS 联动
 
 系统仍保留后端接口用于课程检测联动：

@@ -1,8 +1,38 @@
-{"timestamp": "2026-07-15T10:16:34", "username": "2024001", "action": "login", "target": "student", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
-{"timestamp": "2026-07-15T10:16:34", "username": "2024001", "action": "list_grades", "target": "2024002", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
-{"timestamp": "2026-07-15T10:16:34", "username": "2024001", "action": "vulnerable_grade_query", "target": "2024001' or 1=1--", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": "lab_sqli_bypass_returned_all_grades"}
-{"timestamp": "2026-07-15T10:17:48", "username": "2024001", "action": "login", "target": "student", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
-{"timestamp": "2026-07-15T10:17:48", "username": "2024001", "action": "list_grades", "target": "2024001", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
-{"timestamp": "2026-07-15T10:18:00", "username": "2024001", "action": "logout", "target": "", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
-{"timestamp": "2026-07-15T10:18:12", "username": "teacher", "action": "login", "target": "teacher", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
-{"timestamp": "2026-07-15T10:18:12", "username": "teacher", "action": "list_grades", "target": "all", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "lab_operator", "action": "reset", "target": "", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": "恢复种子数据"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "student", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "list_grades", "target": "2024001", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "list_grades", "target": "2024002", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "student", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "vulnerable_grade_query", "target": "2024001' or 1=1--", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": "lab_sqli_bypass_returned_all_grades"}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "login", "target": "teacher", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "save_grade", "target": "2024001:<img src=x onerror=\"document.body.dataset.xssDemo=1\">", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": "score=91"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "student", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "list_grades", "target": "2024001", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024001", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024002", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024002", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024002", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024002", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "2024002", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "teacher", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "admin", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "admin", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "admin", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:42", "username": "admin", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "admin", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "test", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "test", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "test", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "test", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "test", "action": "login", "target": "", "result": "denied", "scenario": "sqli_probe", "simulated": true, "detail": "账号或密码错误"}
+{"timestamp": "2026-07-15T10:42:43", "username": "lab_operator", "action": "export_log", "target": "ids_csv", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": "events=37"}
+{"timestamp": "2026-07-15T10:43:14", "username": "2024002", "action": "login", "target": "student", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}
+{"timestamp": "2026-07-15T10:43:14", "username": "2024002", "action": "list_grades", "target": "2024002", "result": "ok", "scenario": "sqli_probe", "simulated": true, "detail": ""}

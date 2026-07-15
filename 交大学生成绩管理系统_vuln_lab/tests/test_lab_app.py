@@ -9,8 +9,10 @@ LAB_DIR = Path(__file__).resolve().parents[1]
 IDS_DIR = LAB_DIR.parent
 sys.path.insert(0, str(LAB_DIR))
 sys.path.insert(0, str(IDS_DIR))
+sys.path.insert(0, str(LAB_DIR / "scripts"))
 
 from app import app, reset_state  # noqa: E402
+from demo_attacks import require_local_target  # noqa: E402
 from src.parser.log_parser import parse_csv_log  # noqa: E402
 
 
@@ -170,3 +172,15 @@ def test_invalid_score_rejects_float_like_value():
         )
 
     assert response.status_code == 400
+
+
+def test_demo_script_rejects_non_local_targets():
+    assert require_local_target("http://127.0.0.1:8001") == "http://127.0.0.1:8001"
+    assert require_local_target("http://localhost:8001") == "http://localhost:8001"
+
+    try:
+        require_local_target("http://192.0.2.10:8001")
+    except SystemExit as error:
+        assert "本机靶场" in str(error)
+    else:
+        raise AssertionError("demo script accepted a non-local target")
