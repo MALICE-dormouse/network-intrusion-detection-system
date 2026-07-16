@@ -121,6 +121,31 @@ def test_sqli_payload_returns_all_grades_and_audits_it():
         assert any("or%201=1" in row["path"] for row in rows)
 
 
+def test_student_course_search_supports_normal_and_sqli_lab_queries():
+    with app.test_client() as client:
+        token = login(client, "2024001", "123456")
+        normal = client.get("/api/grades?course=信息安全导论", headers=auth(token))
+        assert normal.status_code == 200
+        normal_items = normal.get_json()["data"]["items"]
+        assert normal_items
+        assert {item["student_id"] for item in normal_items} == {"2024001"}
+        assert {item["course"] for item in normal_items} == {"信息安全导论"}
+
+        payload = "信息安全导论' or 1=1--"
+        injected = client.get("/api/grades", query_string={"course": payload}, headers=auth(token))
+        assert injected.status_code == 200
+        injected_items = injected.get_json()["data"]["items"]
+        assert {"2024001", "2024002", "2024003"}.issubset(
+            {item["student_id"] for item in injected_items}
+        )
+
+        audit = client.get("/api/lab/audit").get_json()["data"]["items"]
+        assert any(
+            item["action"] == "vulnerable_course_query" and item["target"] == payload
+            for item in audit
+        )
+
+
 def test_reset_keeps_vulnerable_site_seeded_without_showing_lab_controls():
     with app.test_client() as client:
         reset = client.post("/api/lab/reset")
