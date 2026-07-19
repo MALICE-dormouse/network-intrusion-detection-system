@@ -147,7 +147,14 @@ def looks_like_sqli_probe(value: str) -> bool:
 
 
 def vulnerable_grade_query(student_id: str) -> list[dict[str, Any]] | None:
-    if looks_like_sqli_probe(student_id):
+    if lab_mode_enabled("sqli_probe") and looks_like_sqli_probe(student_id):
+        return GRADE_RECORDS
+    return None
+
+
+def vulnerable_course_query(course: str) -> list[dict[str, Any]] | None:
+    """Keep the SQLi demonstration on the student course-search parameter."""
+    if lab_mode_enabled("sqli_probe") and looks_like_sqli_probe(course):
         return GRADE_RECORDS
     return None
 
@@ -264,12 +271,23 @@ def list_grades():
         return jsonify({"code": 1, "message": "请先登录"}), 401
 
     student_id = request.args.get("student_id", "").strip()
+    course = request.args.get("course", "").strip()
     vulnerable_records = vulnerable_grade_query(student_id)
     if vulnerable_records is not None:
         audit(
             "vulnerable_grade_query",
             username=username or "anonymous",
             target=student_id,
+            detail="lab_sqli_bypass_returned_all_grades",
+        )
+        return jsonify({"code": 0, "data": {"items": vulnerable_records, "total": len(vulnerable_records)}})
+
+    vulnerable_records = vulnerable_course_query(course)
+    if vulnerable_records is not None:
+        audit(
+            "vulnerable_course_query",
+            username=username or "anonymous",
+            target=course,
             detail="lab_sqli_bypass_returned_all_grades",
         )
         return jsonify({"code": 0, "data": {"items": vulnerable_records, "total": len(vulnerable_records)}})
@@ -282,6 +300,9 @@ def list_grades():
         if student_id:
             records = [item for item in records if item["student_id"] == student_id]
         target = student_id or "all"
+    if course:
+        records = [item for item in records if item["course"] == course]
+        target = f"{target}:{course}"
     audit("list_grades", username=username or "anonymous", target=target)
     return jsonify({"code": 0, "data": {"items": records, "total": len(records)}})
 

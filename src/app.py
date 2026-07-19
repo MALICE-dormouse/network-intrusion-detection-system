@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import csv
 from datetime import datetime, MINYEAR
+from io import StringIO
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, Response, jsonify, render_template, request
 
 try:
     from flask_cors import CORS
@@ -124,18 +125,67 @@ def get_alerts():
     severity = request.args.get("severity", "")
     source_ip = request.args.get("source_ip", "")
 
-    alerts = _last_analysis.get("alerts", [])
-    if alert_type:
-        alerts = [a for a in alerts if a.get("alert_type") == alert_type]
-    if severity:
-        alerts = [a for a in alerts if a.get("level") == severity]
-    if source_ip:
-        alerts = [a for a in alerts if a.get("source_ip") == source_ip]
+    alerts = filter_alerts(_last_analysis.get("alerts", []), alert_type, severity, source_ip)
 
     return jsonify({
         "total": len(alerts),
         "items": alerts,
     })
+
+
+@app.get("/api/alerts/export")
+def export_alerts():
+    global _last_analysis
+    if not _last_analysis.get("events") and not _last_analysis.get("alerts"):
+        events = parse_csv_log(DATA_DIR / "sample_logs_extended.csv")
+        _last_analysis = analyze_events(events, source="示例数据")
+
+    alert_type = request.args.get("type", "")
+    severity = request.args.get("severity", "")
+    source_ip = request.args.get("source_ip", "")
+    alerts = filter_alerts(_last_analysis.get("alerts", []), alert_type, severity, source_ip)
+
+    output = StringIO()
+    output.write("\ufeff")
+    writer = csv.DictWriter(output, fieldnames=[
+        "alert_type",
+        "category",
+        "level",
+        "score",
+        "confidence",
+        "source_ip",
+        "target",
+        "evidence",
+        "rule_id",
+        "count",
+        "first_seen",
+        "last_seen",
+        "matched_fields",
+    ])
+    writer.writeheader()
+    for alert in alerts:
+        writer.writerow({
+            "alert_type": alert.get("alert_type", ""),
+            "category": alert.get("category", ""),
+            "level": alert.get("level", ""),
+            "score": alert.get("score", ""),
+            "confidence": alert.get("confidence", ""),
+            "source_ip": alert.get("source_ip", ""),
+            "target": alert.get("target", ""),
+            "evidence": alert.get("evidence", ""),
+            "rule_id": alert.get("rule_id", ""),
+            "count": alert.get("count", ""),
+            "first_seen": alert.get("first_seen", ""),
+            "last_seen": alert.get("last_seen", ""),
+            "matched_fields": ";".join(alert.get("matched_fields", []) or []),
+        })
+
+    filename = f"alerts-{datetime.now().strftime('%Y%m%d-%H%M%S')}.csv"
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @app.get("/api/alerts/stats")
@@ -187,6 +237,17 @@ def get_recent_alerts():
         "total": len(filtered),
         "items": filtered[:count],
     })
+
+
+def filter_alerts(alerts: list[dict[str, object]], alert_type: str = "", severity: str = "", source_ip: str = "") -> list[dict[str, object]]:
+    filtered = alerts
+    if alert_type:
+        filtered = [alert for alert in filtered if alert.get("alert_type") == alert_type]
+    if severity:
+        filtered = [alert for alert in filtered if alert.get("level") == severity]
+    if source_ip:
+        filtered = [alert for alert in filtered if alert.get("source_ip") == source_ip]
+    return filtered
 
 
 def analyze_events(events, source: str) -> dict[str, object]:

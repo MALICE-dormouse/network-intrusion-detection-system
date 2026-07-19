@@ -1,6 +1,8 @@
+import csv
 from io import BytesIO
 from pathlib import Path
 
+import src.app as app_module
 from src.app import app
 from src.detector.rules import detect_attacks
 from src.parser.log_parser import parse_csv_log
@@ -43,6 +45,47 @@ def test_extended_sample_api_returns_rich_analysis_result():
     assert "by_type" in data["summary"]
     assert "by_level" in data["summary"]
     assert data["summary"]["高危"] == data["summary"]["by_level"]["高危"]
+
+
+def test_alert_export_returns_filtered_csv():
+    with app.test_client() as client:
+        client.get("/api/sample")
+        response = client.get("/api/alerts/export?severity=高危")
+
+    assert response.status_code == 200
+    assert response.content_type.startswith("text/csv")
+    assert "attachment;" in response.headers["Content-Disposition"]
+
+    decoded = response.data.decode("utf-8-sig")
+    rows = list(csv.DictReader(decoded.splitlines()))
+    assert rows
+    assert all(row["level"] == "高危" for row in rows)
+    assert {"alert_type", "source_ip", "evidence", "rule_id"} <= set(rows[0])
+
+
+def test_alert_export_cold_start_uses_sample_data():
+    previous_analysis = app_module._last_analysis
+    app_module._last_analysis = {
+        "events": 0,
+        "alerts": [],
+        "incidents": [],
+        "summary": {},
+        "baseline": {},
+        "metadata": {},
+        "source": "",
+        "recommendations": [],
+    }
+
+    try:
+        with app.test_client() as client:
+            response = client.get("/api/alerts/export")
+    finally:
+        app_module._last_analysis = previous_analysis
+
+    assert response.status_code == 200
+    rows = list(csv.DictReader(response.data.decode("utf-8-sig").splitlines()))
+    assert rows
+    assert rows[0]["alert_type"]
 
 
 def test_old_csv_upload_still_works():
